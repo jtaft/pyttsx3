@@ -38,6 +38,8 @@ class SAPI5Driver(object):
         self._event_sink = SAPI5DriverEventSink()
         self._event_sink.setDriver(weakref.proxy(self))
         self._advise = comtypes.client.GetEvents(self._tts, self._event_sink)
+        #self._advise = comtypes.client.ShowEvents(self._event_sink)
+        #print(self._advise)
         self._proxy = proxy
         self._looping = False
         self._speaking = False
@@ -142,15 +144,28 @@ class SAPI5Driver(object):
 
 
 class SAPI5DriverEventSink(object):
+# event found: _ISpeechVoiceEvents_StartStream
+# event found: _ISpeechVoiceEvents_EndStream
+# event found: _ISpeechVoiceEvents_VoiceChange
+# event found: _ISpeechVoiceEvents_Bookmark
+# event found: _ISpeechVoiceEvents_Word
+# event found: _ISpeechVoiceEvents_Sentence
+# event found: _ISpeechVoiceEvents_Phoneme
+# event found: _ISpeechVoiceEvents_Viseme
+# event found: _ISpeechVoiceEvents_AudioLevel
+# event found: _ISpeechVoiceEvents_EnginePrivate
     def __init__(self):
         self._driver = None
 
     def setDriver(self, driver):
         self._driver = driver
 
-    def _ISpeechVoiceEvents_StartStream(self, char, length):
+    def _ISpeechVoiceEvents_StartStream(self, streamnum, streampos):
         self._driver._proxy.notify(
-            'started-word', location=char, length=length)
+            'started-utterance', streamnum=streamnum, streampos=streampos)
+    def _ISpeechVoiceEvents_Word(self, streamnumber, streamposition, startindex, length):
+        self._driver._proxy.notify(
+            'started-word', location=startindex, length=length)
 
     def _ISpeechVoiceEvents_EndStream(self, stream, pos):
         d = self._driver
