@@ -108,6 +108,15 @@ class Engine(object):
         """
         self.proxy.stop()
 
+    def pause(self):
+        self.proxy.pause()
+
+    def resume(self):
+        self.proxy.resume()
+
+    def skip(self, num):
+        self.proxy.skip(num)
+
     def save_to_file(self, text, filename, name=None):
         '''
         Adds an utterance to speak to the event queue.

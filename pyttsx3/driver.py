@@ -134,6 +134,14 @@ class DriverProxy(object):
         '''
         self._push(self._driver.say, (text,), name)
 
+    def pause(self):
+        self._driver.pause()
+
+    def resume(self):
+        self._driver.resume()
+    def skip(self, num):
+        self._driver.skip(num)
+
     def stop(self):
         '''
         Called by the engine to stop the current utterance and clear the queue
